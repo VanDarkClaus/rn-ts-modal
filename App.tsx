@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
-import { View, Text, DeviceEventEmitter } from 'react-native';
-import {Router} from './src/router'
+import { View, Text, DeviceEventEmitter,AsyncStorage } from 'react-native';
+import Router from './src/router'
 import { MobXProviderContext } from 'mobx-react'
 import store from './src/stores'
 import { Provider as RnProvider } from '@ant-design/react-native'
@@ -8,16 +8,22 @@ import { Provider as RnProvider } from '@ant-design/react-native'
 const App:React.FC = () =>{
   //配置全局主题色
   //修改配色在页面调用DeviceEventEmitter.emit('theme_change', '#000');
-  const [color, setColor] = React.useState('#f6f6f8')
+  let [color, setColor] = React.useState('#000')
+  AsyncStorage.getItem('themeColor')
+  .then (res =>{
+      if(res !== null){
+          setColor(res)
+      }
+  })
   useEffect(()=>{
-    DeviceEventEmitter.addListener('theme_change', params =>{
+    DeviceEventEmitter.addListener('theme_change', (params:string) =>{
       setColor(params)
     })
-  },[color])
+  })
   return(
     <MobXProviderContext.Provider value = {store}>
        <RnProvider>
-        <Router screenProps={{themecolor: color}}></Router>
+        <Router screenProps={{themeColor: color}}></Router>
        </RnProvider>
       </MobXProviderContext.Provider>
   )

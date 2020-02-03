@@ -17,6 +17,7 @@ class UserStore {
                 this.userInfo.isLogin = JSON.parse(res)
             }
         })
+
     }
 //登录动作
     @action
